@@ -9,6 +9,7 @@ import Login from "./routes/root"
 import Home from "./routes/home"
 import SignIn from "./routes/sign-in"
 import Cart from "./routes/cart"
+import Product from "./routes/product"
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
         path: "/cart",
         element: <Cart />,
         errorElement: <ErrorPage />,
+    },
+    {
+        path: "/product/:id",
+        element: <Product />,
+        errorElement: <ErrorPage />
     }
 ])
 
