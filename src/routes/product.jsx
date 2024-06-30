@@ -1,41 +1,70 @@
-import { React, useState, useEffect } from 'react';
-import Navbar from "./navbar"
-import { Link, useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import Navbar from "./navbar";
 
-export default function(){
-
-    const { id } = useParams()
-    
-    const [ data, setData ] = useState([])
-    
-    const [ value, setValue ] = useState(0)
+const ProductDetail = () => {
+    const { id } = useParams();
+    const [product, setProduct] = useState(null);
+    const [quantity, setQuantity] = useState(0);
+    const [cart, setCart] = useState(() => {
+        // Recuperar el carrito del localStorage al cargar el componente
+        const savedCart = localStorage.getItem('cart');
+        return savedCart ? JSON.parse(savedCart) : [];
+    });
 
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
+        // Simulación de fetch de un producto desde una API
+        fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
             .then(response => response.json())
-            .then(fetchedData => setData(fetchedData[id]))
-            .catch(error => console.log("No andamos josha, error en fetch de producto: "+error))
-    }, []);
+            .then(data => setProduct(data))
+            .catch(error => console.log("Error fetching product:", error));
+    }, [id]);
 
-    console.log(data);
-    return(
+    useEffect(() => {
+        // Guardar el carrito en el localStorage cuando se actualice
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
+
+    const addToCart = () => {
+        if (product) {
+            const newItem = { ...product, quantity }; // Crear un nuevo item para el carrito
+            setCart([...cart, newItem]); // Agregar el nuevo item al estado del carrito
+            // Opcional: Puedes mostrar una notificación o mensaje de éxito al usuario
+            alert(`${quantity} ${product.title}(s) añadido(s) al carrito.`);
+            setQuantity(0); // Reiniciar la cantidad después de añadir al carrito
+        }
+    };
+
+    return (
         <>
-            <Navbar/>
+            <Navbar />
             <div className="col-10 mx-auto">
+                {product && (
                     <div className="card">
-                        <img src={`/img/${data.id}`} className="card-img-top"/>
-                    <div className="card-body">
-                        <h5 className='text-center'>{data.title}</h5>
-                        <p className="card-text">{data.body}</p>
-                        <div className='text-center row col-4 mx-auto'>
-                            <input className='form-control col' type="number" value={value} onChange={(e) => setValue(parseInt(e.target.value))} min={0}/>
-                            <Link to='/home' className='btn btn-primary col-auto'>
-                                Añadir
-                            </Link>
+                        <img src={`/img/${product.id}`} className="card-img-top" alt={product.title} />
+                        <div className="card-body">
+                            <h5 className='text-center'>{product.title}</h5>
+                            <p className="card-text">{product.body}</p>
+                            <div className='text-center row col-4 mx-auto'>
+                                <input className='form-control col' type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))} min={0} />
+                                <button className='btn btn-primary col-auto' onClick={addToCart}>
+                                    Añadir al Carrito
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
+            </div>
+            {/* Enlace a la página del carrito */}
+            <div className="text-center">
+                <Link to="/cart">
+                    <button className='btn btn-secondary mt-4'>
+                        Ver Carrito
+                    </button>
+                </Link>
             </div>
         </>
-    )
-}
+    );
+};
+
+export default ProductDetail;
