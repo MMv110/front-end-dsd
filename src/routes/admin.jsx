@@ -18,6 +18,7 @@ export default function(){
 
     // Definición de los useState de los formularios.
     const [formDataAddProduct, setFormDataAddProduct] = useState({
+        ID: '',
         product: '',
         categoria: '',
         description: '',
@@ -45,7 +46,13 @@ export default function(){
         toast.loading('Añadiendo producto...')
         const addData = formDataAddProduct
         
-        let response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        let response = await fetch(
+            `https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto?
+                Nombre=${addData.name}
+                &Categoria=${addData.categoria}
+                &Descripcion=${addData.description}
+                &Precio=${addData.precio}
+                &Stock=${addData.stock}`, {
             method: 'POST',
         })
         
@@ -55,7 +62,7 @@ export default function(){
         }else{
             toast.dismiss()
             toast.success('Producto añadido correctamente.')
-            setFormDataAddProduct({product: '', description: '', stock: '', image: ''})
+            setFormDataAddProduct({product: '', description: '', stock: '', precio: '', image: ''})
             addRef.current.reset()
         }
 
