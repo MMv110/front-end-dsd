@@ -19,18 +19,20 @@ export default function(){
     // Definición de los useState de los formularios.
     const [formDataAddProduct, setFormDataAddProduct] = useState({
         ID: '',
-        product: '',
-        categoria: '',
-        description: '',
-        stock: '',
-        precio: '',
+        Nombre: '',
+        Categoria: '',
+        Descripcion: '',
+        Stock: '',
+        Precio: '',
         image: ''
     })
     const [formDataEditProduct, setFormDataEditProduct] = useState({
-        product: '',
-        description: '',
-        stock: '',
-        precio: '',
+        ID: '',
+        Nombre: '',
+        Categoria: '',
+        Descripcion: '',
+        Stock: '',
+        Precio: '',
         image: ''
     })
 
@@ -45,15 +47,17 @@ export default function(){
         event.preventDefault();
         toast.loading('Añadiendo producto...')
         const addData = formDataAddProduct
+        console.log(addData)
+
         
-        let response = await fetch(
-            `https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto?
-                Nombre=${addData.name}
-                &Categoria=${addData.categoria}
-                &Descripcion=${addData.description}
-                &Precio=${addData.precio}
-                &Stock=${addData.stock}`, {
+        const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto`,{
             method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(addData)
         })
         
         if (!response.ok){
@@ -62,8 +66,16 @@ export default function(){
         }else{
             toast.dismiss()
             toast.success('Producto añadido correctamente.')
-            setFormDataAddProduct({product: '', description: '', stock: '', precio: '', image: ''})
+            setFormDataAddProduct({
+                ID: '',
+                Nombre: '',
+                Categoria: '',
+                Descripcion: '',
+                Stock: '',
+                Precio: '',
+                image: ''})
             addRef.current.reset()
+            window.location.reload()
         }
 
     } 
@@ -78,10 +90,20 @@ export default function(){
     const editProduct = async (event) => {
         event.preventDefault();
         toast.loading('Editando producto...')
-        const editData = formDataEditProduct
+        const { ID } = event.target
+        let parts  = ID.value.split('#')
+        const id = parts[parts.length - 1]
         
-        let response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        const editData = formDataEditProduct
+
+        console.log(editData)
+    
+        const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${id}`,{
             method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(editData)
         })
         
         if (!response.ok){
@@ -90,8 +112,16 @@ export default function(){
         }else{
             toast.dismiss()
             toast.success('Producto editado correctamente.')
-            setFormDataEditProduct({product: '', description: '', stock: '', image: ''})
-            editRef.current.reset()
+            setFormDataEditProduct({ID: '',
+                Nombre: '',
+                Categoria: '',
+                Descripcion: '',
+                Stock: '',
+                Precio: '',
+                image: ''})
+                setTimeout(() => {
+                    window.location.href = '/admin'
+                }, 3000)
         }
 
     }
@@ -100,23 +130,24 @@ export default function(){
     const deleteProduct = async (event) => {
         event.preventDefault();
         toast.loading('Eliminando producto...')
-        const deleteData = event.target.value
-        
-        let response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        const { id } = event.target
+        let parts  = id.value.split('#')
+        const idDelete = parts[parts.length - 1]
+
+        const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${idDelete}`,{
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         })
-        
+        console.log(response)
         if (!response.ok){
             toast.dismiss()
             toast.error("Error al eliminar producto!")
         }else{
             toast.dismiss()
             toast.success('Producto eliminado correctamente.')
-
-            fetch('https://jsonplaceholder.typicode.com/posts')
-                .then(response => response.json())
-                .then(fetchedData => setData(fetchedData))
-                .catch(error => console.log("No andamos josha, error en fetch de home."))
+            window.location.reload()
         }
 
     } 
@@ -131,10 +162,10 @@ export default function(){
 
     // Evento de editar productos de la tabla.
     const handleRowClick = (id) => {
-        console.log(data[id-1])
-        setRowData(data[id-1]);
+
+        const productoEditable = data.find(producto => producto.ID === id);
+        setRowData(productoEditable);
       };
-      console.log(data)
     return(
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
@@ -152,23 +183,23 @@ export default function(){
                                 <div className="form-data" >
                                     <div className="mb-4">
                                         <span className="form-label">Nombre del producto</span>
-                                        <input className="form-control" type="text" name='product' required onChange={handleChangeAddProduct}/>
+                                        <input className="form-control" type="text" name='Nombre' required onChange={handleChangeAddProduct}/>
                                     </div>
                                     <div className="mb-4">
                                         <span className="form-label">Categoria</span>
-                                        <input className="form-control" type="text" name='categoria' required onChange={handleChangeAddProduct}/>
+                                        <input className="form-control" type="text" name='Categoria' required onChange={handleChangeAddProduct}/>
                                     </div>
                                     <div className="mb-4">
                                         <span className="form-label">Descripción</span>
-                                        <input className="form-control" type="text" name='description' required onChange={handleChangeAddProduct}/>
+                                        <input className="form-control" type="text" name='Descripcion' required onChange={handleChangeAddProduct}/>
                                     </div>
                                     <div className="mb-4">
                                         <span className="form-label">Stock</span>
-                                        <input className='form-control col' name='stock' type="number" value={value} onChange={(e) => setValue(parseInt(e.target.value))} min={0} required onBlur={handleChangeAddProduct}/>
+                                        <input className='form-control col' name='Stock' type="number" value={value} onChange={(e) => setValue(parseInt(e.target.value))} min={0} required onBlur={handleChangeAddProduct}/>
                                     </div>
                                     <div className="mb-4">
                                         <span className="form-label">Precio</span>
-                                        <input className='form-control col' name='precio' type="number" min={0} required onBlur={handleChangeAddProduct}/>
+                                        <input className='form-control col' name='Precio' type="number" min={0} required onBlur={handleChangeAddProduct}/>
                                     </div>
                                     <div className='mb-4'>
                                         <span className='form-label'>Imagen</span>
@@ -184,41 +215,43 @@ export default function(){
                    
                     {/* Editar producto */}
                     <div className="col-6 justify-content-center">
-                        <form ref={editRef} action={editProduct}></form>
+                        <form ref={editRef} onSubmit={editProduct}>
                         <div className="card px-5 py-5" id="form1">
                             <div className='card-title'>
                                 <h2 className='mx-auto'>Editar producto</h2>
                             </div>
                             <div className="form-data" >
                                 <div className="mb-4">
+                                    <input type="hidden" name="ID" value={rowData.ID} />
                                     <span className="form-label">Nombre del producto</span>
-                                    <input className="form-control" type="text" name='product' value={rowData.title} required onChange={handleChangeEditProduct}/>
+                                    <input className="form-control" type="text" name='Nombre' placeholder={rowData.Nombre} required onChange={handleChangeEditProduct}/>
                                 </div>
                                 <div className="mb-4">
                                     <span className="form-label">Categoria</span>
-                                    <input className="form-control" type="text" name='categoria' required onChange={handleChangeAddProduct}/>
+                                    <input className="form-control" type="text" name='Categoria' placeholder={rowData.Categoria} required onChange={handleChangeEditProduct}/>
                                 </div>
                                 <div className="mb-4">
                                     <span className="form-label">Descripción</span>
-                                    <input className="form-control" type="text" name='description' value={rowData.body} required onChange={handleChangeEditProduct}/>
+                                    <input className="form-control" type="text" name='Descripcion' placeholder={rowData.Descripcion} required onChange={handleChangeEditProduct}/>
                                 </div>
                                 <div className="mb-4">
                                     <span className="form-label">Stock</span>
-                                    <input className='form-control col' type="number" value={valueEdit} onChange={(e) => setValueEdit(parseInt(e.target.value))} min={0} required onBlur={handleChangeEditProduct}/>
+                                    <input className='form-control col' name='Stock' type="number" placeholder={rowData.Stock} onChange={(e) => setValueEdit(parseInt(e.target.value))} min={0} required onBlur={handleChangeEditProduct}/>
                                 </div>
                                 <div className="mb-4">
                                         <span className="form-label">Precio</span>
-                                        <input className='form-control col' name='precio' type="number" min={0} required onBlur={handleChangeAddProduct}/>
+                                        <input className='form-control col' name='Precio' type="number" placeholder={rowData.Precio} min={0} required onBlur={handleChangeEditProduct}/>
                                     </div>
                                 <div className='mb-4'>
                                     <span className='form-label'>Imagen</span>
                                     <input className='form-control col' type="file" accept='.png' required onChange={handleChangeEditProduct}/>
                                 </div>
                                 <div className='text-center'>
-                                    <button type="submit" className='btn btn-primary' onClick="">Editar</button>
+                                    <button type="submit" className='btn btn-primary'>Editar</button>
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -249,10 +282,10 @@ export default function(){
                                 <td>{item.Stock}</td>
                                 <td>${item.Precio}</td>
                                 <td><img src={`/img/${data.id}`} className="card-img-top"/></td>
-                                <td><button className='btn btn-primary' onClick={() => handleRowClick(item.id)}><FaPencilAlt/></button></td>
+                                <td><button className='btn btn-primary' onClick={() => handleRowClick(item.ID)}><FaPencilAlt/></button></td>
                                 <td>
                                     <form onSubmit={deleteProduct}>
-                                        <input type="hidden" name='id' value={item.id}/>
+                                        <input type="hidden" name='id' value={item.ID}/>
                                         <button type='submit' className='btn btn-danger'><FaTrash/></button>
                                     </form>
                                 </td>
