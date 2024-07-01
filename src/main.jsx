@@ -11,6 +11,7 @@ import SignIn from "./routes/sign-in"
 import Cart from "./routes/cart"
 import Product from "./routes/product"
 import Admin from "./routes/admin"
+import Payment from "./routes/pago"
 
 const router = createBrowserRouter([
     {
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
     {
         path: "/admin",
         element: <Admin />,
+        errorElement: <ErrorPage />
+    },
+    {
+        path: "/pago",
+        element: <Payment />,
         errorElement: <ErrorPage />
     }
 ])

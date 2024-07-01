@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from "./navbar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
     const [cart, setCart] = useState(() => {
@@ -8,6 +8,8 @@ const Cart = () => {
         const savedCart = localStorage.getItem('cart');
         return savedCart ? JSON.parse(savedCart) : [];
     });
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Guardar el carrito en el localStorage cuando se actualice
@@ -38,6 +40,11 @@ const Cart = () => {
 
     const calculateTotal = () => {
         return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    };
+
+    const handlePayment = () => {
+        const totalAmount = calculateTotal().toFixed(2);
+        navigate('/pago', { state: { monto: totalAmount } });
     };
 
     return (
@@ -73,9 +80,7 @@ const Cart = () => {
                 <div className="text-center">
                     <h3>Total a pagar: ${calculateTotal().toFixed(2)}</h3>
                 </div>
-                <Link to={'/home'}>
-                    <button className="btn btn-outline-danger mx-auto" type="submit">Pagar</button>
-                </Link>
+                <button className="btn btn-outline-danger mx-auto" onClick={handlePayment}>Pagar</button>
             </div>
         </>
     );

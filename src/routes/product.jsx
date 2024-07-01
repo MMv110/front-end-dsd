@@ -13,28 +13,47 @@ export default function(){
     const [ data, setData ] = useState([])
     const [ value, setValue ] = useState(0)
 
-    const addShopingCart = async(event) => {
-        event.preventDefault()
-        toast.loading('Añadiendo al carrito.')
-        const {idProduct, cart} = event.target
-
-        let response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-            method: 'POST',
-        })
-        
-        if (!response.ok){
-            toast.dismiss()
-            toast.error("Error al añadir producto!")
-        }else{
-            toast.dismiss()
-            toast.success('Producto añadido correctamente.')
-            toast.info('Redireccionando al menú.')
+    const addShopingCart = async (event) => {
+        event.preventDefault();
+        toast.loading('Añadiendo al carrito.');
+    
+        const idProduct = event.target.idProduct.value; // Obtener el ID del producto desde el formulario
+        const quantity = event.target.cart.value; // Obtener la cantidad del producto desde el formulario
+    
+        try {
+            // Realizar la solicitud POST para agregar el producto al carrito
+            const response = await fetch('https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idProduct: idProduct,
+                    quantity: quantity
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error al añadir producto al carrito.');
+            }
+    
+            // Si la solicitud es exitosa, mostrar mensajes de éxito y redireccionar
+            toast.dismiss();
+            toast.success('Producto añadido correctamente.');
+           // toast.info('Redireccionando al menú.');
+    
             setTimeout(() => {
-                window.location.href = '/home'
-            }, 3000)
-            
-        }     
-    }
+                window.location.href = '/home';
+            }, 3000);
+    
+        } catch (error) {
+            console.error('Error al añadir producto al carrito:', error);
+            toast.dismiss();
+            toast.error('Error al añadir producto al carrito. Por favor, intenta de nuevo.');
+        }
+    };
+    
+
     useEffect(() => {
         fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${id}`)
             .then(response => response.json())
