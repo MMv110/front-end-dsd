@@ -80,9 +80,9 @@ export default function Product() {
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Navbar />
             {data.map((item) => (
-                <div className="col-10 mx-auto" key={item.ID}>
+                <div className="col-6 mx-auto" key={item.ID}>
                     <div className="card">
-                        <img src={`/img/${item.ID}`} className="card-img-top" alt={item.Nombre} />
+                        <img src={`https://268r9iu4hg.execute-api.us-east-1.amazonaws.com/dev/makeupmania?file=${item.ID.split('#')[item.ID.split('#').length - 1]}.jpg`} className="card-img-top mx-6" height="250"/>
                         <div className="card-body">
                             <h5 className='text-center'>{item.Nombre}</h5>
                             <p className="card-text">{item.Descripcion}</p>
