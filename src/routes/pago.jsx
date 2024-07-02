@@ -8,7 +8,7 @@ const Payment = () => {
     const token = sessionStorage.getItem('token');
     const email = sessionStorage.getItem('email');
 
-    if (token || email) {
+    if (token === undefined || email === undefined || token === null || email === null) {
         window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
     }
 
@@ -22,9 +22,9 @@ const Payment = () => {
             cvv: ""
         }
     )
+    const [ carrito, setCarrito ] = useState([])
 
     useEffect(() => {
-        const email = "paredescarlos313@gmail.com"
         fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/pago/${email}`)
             .then(response => response.json())
             .then(fetchedData => setData(fetchedData))
@@ -46,7 +46,7 @@ const Payment = () => {
                 body: JSON.stringify(pago)
             }
         )
-        
+
         window.location.href = '/home'
 
     }

@@ -10,7 +10,7 @@ export default function Navbar() {
   const token = sessionStorage.getItem('token');
     const email = sessionStorage.getItem('email');
 
-    if (token || email) {
+    if (token === undefined || email === undefined) {
         window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
     }
 

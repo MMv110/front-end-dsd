@@ -8,8 +8,7 @@ const Cart = () => {
     const token = sessionStorage.getItem('token');
     const email = sessionStorage.getItem('email');
 
-    console.log(token);
-    if (token || email) {
+    if (token === undefined || email === undefined || token === null || email === null) {
         window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
     }
 
