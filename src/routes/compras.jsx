@@ -2,13 +2,7 @@ import { React, useState, useEffect } from 'react';
 import Navbar from './navbar';
 
 export default function(){
-    const token = sessionStorage.getItem('token');
-    const email = sessionStorage.getItem('email');
-
-    if (token === undefined || email === undefined || token === null || email === null) {
-        window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
-    }
-
+    const email = "paredescarlos313@gmail.com"
     const [data, setData] = useState([]);
     // Cargar los pagos del usuario
     useEffect(() => {

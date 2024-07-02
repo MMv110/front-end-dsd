@@ -6,13 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function(){
-    const token = sessionStorage.getItem('token');
-    const email = sessionStorage.getItem('email');
-
-    if (token === undefined || email === undefined || token === null || email === null) {
-        window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
-    }
-
     // Referencias de los formularios.
     const addRef = useRef(null)
     const editRef = useRef(null)
@@ -61,7 +54,6 @@ export default function(){
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
             },
             body: JSON.stringify(addData)
         })
@@ -95,7 +87,6 @@ export default function(){
     // Evento de Editar producto.
     const editProduct = async (event) => {
         event.preventDefault();
-        toast.loading('Editando producto...')
         const { ID } = event.target
         let parts  = ID.value.split('#')
         const id = parts[parts.length - 1]
@@ -108,17 +99,12 @@ export default function(){
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
             },
             body: JSON.stringify(editData)
         })
         
         if (!response.ok){
-            toast.dismiss()
-            toast.error("Error al editar producto!")
         }else{
-            toast.dismiss()
-            toast.success('Producto editado correctamente.')
             setFormDataEditProduct({ID: '',
                 Nombre: '',
                 Categoria: '',
@@ -136,7 +122,6 @@ export default function(){
     // Evento de Borrar producto.
     const deleteProduct = async (event) => {
         event.preventDefault();
-        toast.loading('Eliminando producto...')
         const { id } = event.target
         let parts  = id.value.split('#')
         const idDelete = parts[parts.length - 1]
@@ -144,8 +129,7 @@ export default function(){
         const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${idDelete}`,{
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token,
+                'Content-Type': 'application/json'
             }
         })
         console.log(response)
@@ -181,7 +165,6 @@ export default function(){
       };
     return(
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <NavbarAdmin/>
             <div className="container mt-5">
                 <div className='row'>
