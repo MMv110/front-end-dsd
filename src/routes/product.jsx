@@ -19,23 +19,38 @@ export default function(){
     
         const idProduct = event.target.idProduct.value; // Obtener el ID del producto desde el formulario
         const quantity = event.target.cart.value; // Obtener la cantidad del producto desde el formulario
+        const price = event.target.price.value;//Precio
+        const id_usuario = "paredescarlos313@gmail.com";
     
         try {
+            console.log(idProduct, quantity)
             // Realizar la solicitud POST para agregar el producto al carrito
-            const response = await fetch('https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto', {
-                method: 'POST',
+            const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/carrito/${id_usuario}`, {
+                method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     idProduct: idProduct,
-                    quantity: quantity
+                    quantity: quantity,
+                    price: price
                 })
             });
     
             if (!response.ok) {
                 throw new Error('Error al añadir producto al carrito.');
             }
+         /*   const newCartItem = {
+                idProduct: idProduct,
+                price: price,
+                quantity: quantity
+            };
+            
+            // Guardar el carrito en el localStorage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(newCartItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
+*/
     
             // Si la solicitud es exitosa, mostrar mensajes de éxito y redireccionar
             toast.dismiss();
@@ -55,14 +70,15 @@ export default function(){
     
 
     useEffect(() => {
-        fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${id}`)
+        const id_usuario = 1;
+        fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${id_usuario}`)
             .then(response => response.json())
             .then(fetchedData => setData(fetchedData))
             .catch(error => console.log("No andamos josha, error en fetch de producto: "+error))
     }, []);
 
     console.log(data)
-
+    
     return(
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
@@ -77,7 +93,11 @@ export default function(){
                             <div className='text-center row col-4 mx-auto'>
                                 <form onSubmit={addShopingCart}>
                                     <input type="hidden" name="idProduct" value={item.ID} />
+                                    <span>Cantidad</span>
                                     <input className='form-control col' name='cart' type="number" value={value} onChange={(e) => setValue(parseInt(e.target.value))} min={0}/>
+                                    <span>Precio</span>
+                                    <input className='form-control col'  name='price' type="number" value={item.Precio} readOnly />
+
                                     <button type='submit' className='btn btn-primary col-auto'>
                                         Añadir
                                     </button>
