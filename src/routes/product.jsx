@@ -4,6 +4,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Product() {
+    const token = sessionStorage.getItem('token');
+    const email = sessionStorage.getItem('email');
+
+    if (!token || !email) {
+        window.location.href = ''
+    }
+
     const url = window.location.href;
     let parts = url.split('#');
     const id = parts[parts.length - 1];
@@ -16,13 +23,14 @@ export default function Product() {
 
         const idProduct = event.target.idProduct.value;
         const price = event.target.price.value;
-        const id_usuario = "paredescarlos313@gmail.com";
+        const id_usuario = email;
 
         try {
             const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/carrito/${id_usuario}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': token
                 },
                 body: JSON.stringify({
                     idProduct: idProduct,

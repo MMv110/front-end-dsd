@@ -6,6 +6,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function(){
+    const token = sessionStorage.getItem('token');
+    const email = sessionStorage.getItem('email');
+
+    if (!token || !email) {
+        window.location.href = ''
+    }
+
     // Referencias de los formularios.
     const addRef = useRef(null)
     const editRef = useRef(null)
@@ -15,6 +22,7 @@ export default function(){
     const [ valueEdit, setValueEdit ] = useState(0)
     const [ rowData, setRowData ] = useState({})
     const [data, setData ] = useState([])
+    const [ file, setFile ] = useState(null)
 
     // Definición de los useState de los formularios.
     const [formDataAddProduct, setFormDataAddProduct] = useState({
@@ -47,15 +55,13 @@ export default function(){
         event.preventDefault();
         toast.loading('Añadiendo producto...')
         const addData = formDataAddProduct
-        console.log(addData)
-
+        
         
         const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto`,{
             method: 'POST',
-            mode: 'no-cors',
             headers: {
-                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
+                'Authorization': token,
             },
             body: JSON.stringify(addData)
         })
@@ -102,6 +108,7 @@ export default function(){
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': token,
             },
             body: JSON.stringify(editData)
         })
@@ -138,6 +145,7 @@ export default function(){
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': token,
             }
         })
         console.log(response)
@@ -152,6 +160,12 @@ export default function(){
 
     } 
 
+    const handleFileChange = (e) => {
+        const { name } = e.target
+        const file = e.target.files[0]
+        setFormDataAddProduct((prevState) => ({ ...prevState, [name]: file}))
+      };
+
     // Cargar los productos.
     useEffect(() => {
         fetch('https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto')
@@ -162,7 +176,6 @@ export default function(){
 
     // Evento de editar productos de la tabla.
     const handleRowClick = (id) => {
-
         const productoEditable = data.find(producto => producto.ID === id);
         setRowData(productoEditable);
       };
@@ -203,7 +216,7 @@ export default function(){
                                     </div>
                                     <div className='mb-4'>
                                         <span className='form-label'>Imagen</span>
-                                        <input className='form-control col' name='image' type="file" accept='.png' required onChange={handleChangeAddProduct}/>
+                                        <input className='form-control col' name='image' type="file" accept='.jpg' required onInput={handleFileChange}/>
                                     </div>
                                     <div className='text-center'>
                                         <button type="submit" className='btn btn-success'>Añadir</button>
@@ -244,7 +257,7 @@ export default function(){
                                     </div>
                                 <div className='mb-4'>
                                     <span className='form-label'>Imagen</span>
-                                    <input className='form-control col' type="file" accept='.png' required onChange={handleChangeEditProduct}/>
+                                    <input className='form-control col' type="file" accept='.jpg' required onChange={handleChangeEditProduct}/>
                                 </div>
                                 <div className='text-center'>
                                     <button type="submit" className='btn btn-primary'>Editar</button>

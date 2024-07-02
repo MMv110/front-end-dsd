@@ -2,10 +2,18 @@ import { React } from 'react'
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
+import { IoTicket } from "react-icons/io5";
 
 
 
 export default function Navbar() {
+  const token = sessionStorage.getItem('token');
+    const email = sessionStorage.getItem('email');
+
+    if (!token || !email) {
+        window.location.href = ''
+    }
+
   return (
     <>
         <nav className="navbar navbar-expand-lg bg-body-tertiary mb-4" data-bs-theme="dark">
@@ -20,6 +28,9 @@ export default function Navbar() {
                     </li>
                     <li className="nav-item">
                     <Link to={'/cart'} className="nav-link"><FaShoppingCart /> Carrito </Link>
+                    </li>
+                    <li className='nav-item'>
+                    <Link to={'/compras'} className="nav-link"><IoTicket /> Compras</Link>
                     </li>
                 </ul>
                 <Link to={'/'}><button className="btn btn-outline-danger" type="submit">Log out</button></Link>

@@ -7,11 +7,11 @@ import {
 import ErrorPage from "./error-page"
 import Login from "./routes/root"
 import Home from "./routes/home"
-import SignIn from "./routes/sign-in"
 import Cart from "./routes/cart"
 import Product from "./routes/product"
 import Admin from "./routes/admin"
 import Payment from "./routes/pago"
+import Compras from "./routes/compras"
 
 const router = createBrowserRouter([
     {
@@ -22,11 +22,6 @@ const router = createBrowserRouter([
     {
         path: "/home",
         element: <Home />,
-        errorElement: <ErrorPage />,
-    },
-    {
-        path: "/sign-in",
-        element: <SignIn />,
         errorElement: <ErrorPage />,
     },
     {
@@ -47,6 +42,11 @@ const router = createBrowserRouter([
     {
         path: "/pago",
         element: <Payment />,
+        errorElement: <ErrorPage />
+    },
+    {
+        path: "/compras",
+        element: <Compras />,
         errorElement: <ErrorPage />
     }
 ])
