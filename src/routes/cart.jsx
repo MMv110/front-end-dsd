@@ -86,8 +86,7 @@ const Cart = () => {
     );
 };
 
-export default Cart;*/
-import React, { useEffect, useState } from 'react';
+export default Cart;*/import React, { useEffect, useState } from 'react';
 import Navbar from "./navbar";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -101,11 +100,14 @@ const Cart = () => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
+
     const incrementQuantity = (index) => {
         const newCart = [...cart];
         newCart[index].quantity += 1;
         setCart(newCart);
-        localStorage.setItem('cart', JSON.stringify(newCart));
     };
 
     const decrementQuantity = (index) => {
@@ -113,7 +115,6 @@ const Cart = () => {
         if (newCart[index].quantity > 1) {
             newCart[index].quantity -= 1;
             setCart(newCart);
-            localStorage.setItem('cart', JSON.stringify(newCart));
         } else {
             removeItem(index);
         }
@@ -122,7 +123,6 @@ const Cart = () => {
     const removeItem = (index) => {
         const newCart = cart.filter((_, i) => i !== index);
         setCart(newCart);
-        localStorage.setItem('cart', JSON.stringify(newCart));
     };
 
     const calculateTotal = () => {

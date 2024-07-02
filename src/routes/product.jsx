@@ -1,30 +1,24 @@
-import { React, useState, useEffect } from 'react';
-import Navbar from "./navbar"
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import Navbar from "./navbar";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function(){
-
-    const url = window.location.href
-
-    let parts  = url.split('#')
-    const id = parts[parts.length - 1]
-    const [ data, setData ] = useState([])
-    const [ value, setValue ] = useState(0)
+export default function Product() {
+    const url = window.location.href;
+    let parts = url.split('#');
+    const id = parts[parts.length - 1];
+    const [data, setData] = useState([]);
+    const [quantity, setQuantity] = useState(0);
 
     const addShopingCart = async (event) => {
         event.preventDefault();
         toast.loading('Añadiendo al carrito.');
-    
-        const idProduct = event.target.idProduct.value; // Obtener el ID del producto desde el formulario
-        const quantity = event.target.cart.value; // Obtener la cantidad del producto desde el formulario
-        const price = event.target.price.value;//Precio
+
+        const idProduct = event.target.idProduct.value;
+        const price = event.target.price.value;
         const id_usuario = "paredescarlos313@gmail.com";
-    
+
         try {
-            console.log(idProduct, quantity)
-            // Realizar la solicitud POST para agregar el producto al carrito
             const response = await fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/carrito/${id_usuario}`, {
                 method: 'PUT',
                 headers: {
@@ -36,57 +30,51 @@ export default function(){
                     price: price
                 })
             });
-    
+
             if (!response.ok) {
                 throw new Error('Error al añadir producto al carrito.');
             }
-         /*   const newCartItem = {
+
+            // Añadir el producto al carrito local
+            const newCartItem = {
                 idProduct: idProduct,
-                price: price,
+                title: data.find(item => item.ID === idProduct).Nombre,
+                price: parseFloat(price),
                 quantity: quantity
             };
-            
+
             // Guardar el carrito en el localStorage
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             cart.push(newCartItem);
             localStorage.setItem('cart', JSON.stringify(cart));
-*/
-    
-            // Si la solicitud es exitosa, mostrar mensajes de éxito y redireccionar
+
             toast.dismiss();
             toast.success('Producto añadido correctamente.');
-           // toast.info('Redireccionando al menú.');
-    
-            setTimeout(() => {
-                window.location.href = '/home';
-            }, 3000);
-    
+            setQuantity(0); // Resetear la cantidad después de añadir al carrito
+
         } catch (error) {
             console.error('Error al añadir producto al carrito:', error);
             toast.dismiss();
             toast.error('Error al añadir producto al carrito. Por favor, intenta de nuevo.');
         }
     };
-    
 
     useEffect(() => {
-        const id_usuario = 1;
+        const id_usuario = id;
         fetch(`https://qdvmstye68.execute-api.us-east-1.amazonaws.com/dev/producto/${id_usuario}`)
             .then(response => response.json())
             .then(fetchedData => setData(fetchedData))
-            .catch(error => console.log("No andamos josha, error en fetch de producto: "+error))
+            .catch(error => console.log("No andamos josha, error en fetch de producto: " + error));
     }, []);
 
-    console.log(data)
-    
-    return(
+    return (
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
-            <Navbar/>
+            <Navbar />
             {data.map((item) => (
-                <div className="col-10 mx-auto">
+                <div className="col-10 mx-auto" key={item.ID}>
                     <div className="card">
-                        <img src={`/img/${item.ID}`} className="card-img-top"/>
+                        <img src={`/img/${item.ID}`} className="card-img-top" alt={item.Nombre} />
                         <div className="card-body">
                             <h5 className='text-center'>{item.Nombre}</h5>
                             <p className="card-text">{item.Descripcion}</p>
@@ -94,9 +82,9 @@ export default function(){
                                 <form onSubmit={addShopingCart}>
                                     <input type="hidden" name="idProduct" value={item.ID} />
                                     <span>Cantidad</span>
-                                    <input className='form-control col' name='cart' type="number" value={value} onChange={(e) => setValue(parseInt(e.target.value))} min={0}/>
+                                    <input className='form-control col' name='cart' type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))} min={0} />
                                     <span>Precio</span>
-                                    <input className='form-control col'  name='price' type="number" value={item.Precio} readOnly />
+                                    <input className='form-control col' name='price' type="number" value={item.Precio} readOnly />
 
                                     <button type='submit' className='btn btn-primary col-auto'>
                                         Añadir
@@ -108,5 +96,5 @@ export default function(){
                 </div>
             ))}
         </>
-    )
+    );
 }
