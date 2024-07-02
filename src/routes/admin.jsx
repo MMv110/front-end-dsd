@@ -10,7 +10,7 @@ export default function(){
     const email = sessionStorage.getItem('email');
 
     if (!token || !email) {
-        window.location.href = ''
+        window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
     }
 
     // Referencias de los formularios.

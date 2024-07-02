@@ -7,7 +7,7 @@ export default function(){
     const email = sessionStorage.getItem('email');
 
     if (!token || !email) {
-        window.location.href = ''
+        window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
     }
 
     const [data, setData ] = useState([])
@@ -19,7 +19,7 @@ export default function(){
             .catch(error => console.log("No andamos josha, error en fetch de home."+ error.message))
             
     }, []);
-    console.log(data);
+    
     return(
         <div>
             <Navbar/>
@@ -30,7 +30,7 @@ export default function(){
                 <div className="col-md-3">
                     <div className="card">
                         <Link to={`https://ofyldilglg.execute-api.us-east-1.amazonaws.com/v1/${item.ID}.jpg`}>
-                        <img src={`https://268r9iu4hg.execute-api.us-east-1.amazonaws.com/dev/makeupmania?file=${item.ID.split('#')[item.ID.split('#').length - 1]}.jpg`} className="card-img-top" height="250"/>
+                        <img src={`https://268r9iu4hg.execute-api.us-east-1.amazonaws.com/dev/makeupmania?file=${item.ID.split('#')[item.ID.split('#').length - 1]}.jpg`} className="card-img-top" name='img' height="250"/>
                         </Link>
                     <div className="card-body">
                         <Link to={`/product/${item.ID}`} className="card-title">

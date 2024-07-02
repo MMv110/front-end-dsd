@@ -10,8 +10,8 @@ export default function Navbar() {
   const token = sessionStorage.getItem('token');
     const email = sessionStorage.getItem('email');
 
-    if (!token || !email) {
-        window.location.href = ''
+    if (token || email) {
+        window.location.href = 'http://dfv8z1sgwh8u8.cloudfront.net/'
     }
 
   return (
@@ -33,7 +33,7 @@ export default function Navbar() {
                     <Link to={'/compras'} className="nav-link"><IoTicket /> Compras</Link>
                     </li>
                 </ul>
-                <Link to={'/'}><button className="btn btn-outline-danger" type="submit">Log out</button></Link>
+                <Link to={'http://dfv8z1sgwh8u8.cloudfront.net/logout'}><button className="btn btn-outline-danger" type="submit">Log out</button></Link>
                 </div>
             </div>
         </nav>
